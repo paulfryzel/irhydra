@@ -11,6 +11,7 @@ import "package:irhydra/src/modes/dartvm/dartvm.dart" as dartvm;
 import "package:irhydra/src/modes/v8/v8.dart" as v8;
 import 'package:irhydra/src/ui/spinner-element.dart';
 import 'package:js/js.dart' as js;
+import 'package:paper_elements/paper_toast.dart' show PaperToast;
 import 'package:polymer/polymer.dart';
 
 import 'package:archive/archive.dart' show BZip2Decoder, TarDecoder;
@@ -116,17 +117,17 @@ class HydraElement extends PolymerElement {
             }
 
             done(x) {
-              shadowRoot.querySelector("paper-toast").dismiss();
+              (shadowRoot.querySelector("paper-toast") as PaperToast).dismiss();
               progressUrl = progressValue = progressAction = null;
             }
 
             progressAction = "Downloading";
             progressUrl = path;
-            shadowRoot.querySelector("paper-toast").show();
+            (shadowRoot.querySelector("paper-toast") as PaperToast).show();
             return HttpRequest.request(path, responseType: "arraybuffer", onProgress: progress)
               .then((rq) {
                 progressAction = "Unpacking";
-                shadowRoot.querySelector("paper-toast").show();
+                (shadowRoot.querySelector("paper-toast") as PaperToast).show();
                 return new async.Future.delayed(const Duration(milliseconds: 100), () => rq.response);
               })
               .then(unpack)

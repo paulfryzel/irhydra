@@ -40,12 +40,23 @@ class Name {
   Name(String this.full, String this.source, String this.short);
 
   /** Create a [Name] that has no short form. */
-  Name.fromFull(String full) : this(full, null, full);
+  Name.fromFull(String full) : this(full, full, null);
 
-  get display => short != "" ? short : "<anonymous>";
+  String get display => short != "" ? short : "<anonymous>";
+
+  int get hashCode {
+    int result = 17;
+    result = 37 * result + full.hashCode;
+    result = 37 * result + source.hashCode;
+    result = 37 * result + short.hashCode;
+    return result;
+  }
 
   /** Two names are equal if they have equal full forms. */
-  operator ==(other) => other.full == full;
+  bool operator ==(other) {
+    if (other is! Name) return false;
+    return other.full == full;
+  }
 }
 
 /**
@@ -92,7 +103,7 @@ class Deopt {
   /** Type of the deoptimization ("eager", "lazy", "soft"). */
   final String type;
 
-  Deopt(this.timestamp, this.id, this.raw, { this.type: "eager", this.optimizationId, this.reason});
+  Deopt(this.timestamp, this.id, this.raw, { this.type: "eager", this.optimizationId, this.reason });
 
   static final _typesOrdering = const { "eager": 0, "lazy": 1, "soft": 2, "none": 3 };
   static final _types = _typesOrdering.keys.toList();
